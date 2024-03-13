@@ -28,16 +28,22 @@ def add_button():
     if len(website) == 0 or len(password) == 0:
         messagebox.showinfo(title="Oops" , message= "Empty Fields ")
     elif messagebox.askyesno('Confirmation' ,message= f" Website : {website} \n Email = {email} \n Password: {password}\n Is being added to the Data file"):
-        with open("data.json" , 'r') as data_file:
+        try:
+            with open("data.json" , 'r') as data_file:
+                data = json.load(data_file)
             
-            data = json.load(data_file)
-            data.update(new_data)
+        except FileNotFoundError:
+            with open("data.json" , 'w') as data_file:
+                json.dump(new_data,data_file)
             
-        with open("data.json" , 'w') as data_file:
-            json.dump(data,data_file,indent=4)
+        else:
+            data.update(new_data)  
+            with open("data.json" , 'w') as data_file:
+                json.dump(data,data_file,indent=4)
             
-        WebsiteEntry.delete(0,END)
-        PasswordEntry.delete(0,END)
+        finally:
+            WebsiteEntry.delete(0,END)
+            PasswordEntry.delete(0,END)
 
 # ---------------------------- Search Function ------------------------------- #
 def search_button():
@@ -49,7 +55,7 @@ def search_button():
             if search_target in data_set:
                 email = data_set[search_target]['email']
                 password =  data_set[search_target]['password']
-                messagebox.showinfo(title="Results" , message=f"Website: {search_target}\nEmail: {email}\nPassword: {password}")
+                messagebox.showinfo(title="Results" , message=f"Email: {email}\nPassword: {password}")
             elif len(search_target) < 1:
                 messagebox.showinfo(title="Results" , message=f"Field is Empty")
             else:
