@@ -20,12 +20,12 @@ def add_button():
     email = EmailEntry.get()
     password = PasswordEntry.get()
     website = WebsiteEntry.get()
-    new_data = {website :{
-        'email' : email,
-        'password' : password
+    new_data = {website.lower() :{
+        'email' : email.lower() ,
+        'password' : password.lower() 
     }
             }
-    if len(email) == 0 or len(password) == 0:
+    if len(website) == 0 or len(password) == 0:
         messagebox.showinfo(title="Oops" , message= "Empty Fields ")
     elif messagebox.askyesno('Confirmation' ,message= f" Website : {website} \n Email = {email} \n Password: {password}\n Is being added to the Data file"):
         with open("data.json" , 'r') as data_file:
@@ -41,13 +41,22 @@ def add_button():
 
 # ---------------------------- Search Function ------------------------------- #
 def search_button():
-    with open('data.json' , 'r') as data_file:
-        data_set = json.load(data_file)
-        search_target = WebsiteEntry.get()
-        if search_target in data_set:
-            email = data_set[search_target]['email']
-            password =  data_set[search_target]['password']
-            messagebox.showinfo(title="Results" , message=f"Website: {search_target}\nEmail: {email}\nPassword: {password}")
+    try:
+        with open('data.json' , 'r') as data_file:
+            data_set = json.load(data_file)
+            search_target = WebsiteEntry.get()
+            search_target = search_target.lower()
+            if search_target in data_set:
+                email = data_set[search_target]['email']
+                password =  data_set[search_target]['password']
+                messagebox.showinfo(title="Results" , message=f"Website: {search_target}\nEmail: {email}\nPassword: {password}")
+            elif len(search_target) < 1:
+                messagebox.showinfo(title="Results" , message=f"Field is Empty")
+            else:
+                messagebox.showinfo(title="Results" , message=f"No Data Found Against Website {search_target}")
+            
+    except FileNotFoundError:
+        print("File Not Found")
 
 # ---------------------------- UI SETUP ------------------------------- #
 
