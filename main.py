@@ -21,8 +21,8 @@ def add_button():
     password = PasswordEntry.get()
     website = WebsiteEntry.get()
     new_data = {website.lower() :{
-        'email' : email.lower() ,
-        'password' : password.lower() 
+        'email' : email,
+        'password' : password
     }
             }
     if len(website) == 0 or len(password) == 0:
